@@ -12,12 +12,15 @@ function App() {
   let [users, setUsers] = useState([]);
   let [loading, setLoading] = useState(false);
   let [errorMessage, setErrorMessage] = useState(null);
+  let [userToEdit, setEditUser] = useState(null);
+  let [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     fetchUsers()
   }, []);
 
   function addUserHandler() {
+    setEditMode(false);
     setShowForm(true);
   }
 
@@ -25,7 +28,21 @@ function App() {
     setShowForm(false)
   }
 
+  function onDeleteUser(userToDelete) {
+    axios.delete('https://react-http-tutorial-5cf12-default-rtdb.firebaseio.com/users/' + userToDelete.id + '.json')
+        .then((deleteUser) => {
+          fetchUsers();
+          setShowForm(false);
+        })
+        .catch((error) => {
+          setErrorMessage(error.message);
+          setLoading(false);
+        })
+  }
+
   function onCreateUser(user) {
+    setErrorMessage(null);
+    setLoading(true);
     //Using JS fetch method
     // fetch(
     //   'https://react-http-tutorial-5cf12-default-rtdb.firebaseio.com/users.json', {
@@ -40,11 +57,25 @@ function App() {
     //   })
 
     //Using axios
-    axios.post('https://react-http-tutorial-5cf12-default-rtdb.firebaseio.com/users.json', user)
-      .then((user) => {
-        fetchUsers();
-        setShowForm(false);
-      })
+    editMode ?
+      axios.put('https://react-http-tutorial-5cf12-default-rtdb.firebaseio.com/users/' + userToEdit.id + '.json', user)
+        .then((user) => {
+          fetchUsers();
+          setShowForm(false);
+        })
+        .catch((error) => {
+          setErrorMessage(error.message);
+          setLoading(false);
+        })
+      : axios.post('https://react-http-tutorial-5cf12-default-rtdb.firebaseio.com/users.json', user)
+        .then((user) => {
+          fetchUsers();
+          setShowForm(false);
+        })
+        .catch((error) => {
+          setErrorMessage(error.message);
+          setLoading(false);
+        })
 
   }
 
@@ -85,16 +116,22 @@ function App() {
 
   }
 
+  function onEditUser(user) {
+    setShowForm(true);
+    setEditMode(true);
+    setEditUser(user);
+  }
+
   return (
     <div>
       <div className='page-header'>
         <button className='btn btn-success' onClick={addUserHandler}>Add User</button>
         <button className='btn btn-normal' onClick={fetchUsers}>Get Users</button>
       </div>
-      {!loading && !errorMessage && <UserDetails users={users}></UserDetails>}
+      {!loading && !errorMessage && <UserDetails users={users} onEditUser={onEditUser} onDeleteUser={onDeleteUser}></UserDetails>}
       {errorMessage && <h1 style={{ textAlign: 'center' }}>{errorMessage}</h1>}
       {loading && <Loader></Loader>}
-      {showForm && <UserForm closeForm={closeForm} onCreateUser={onCreateUser}></UserForm>}
+      {showForm && <UserForm closeForm={closeForm} onCreateUser={onCreateUser} editMode={editMode} user={userToEdit}></UserForm>}
     </div>
   );
 }
