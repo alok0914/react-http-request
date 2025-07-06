@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import UserForm from './Components/UserForm';
 import './App.css';
 import UserDetails from './Components/UserDetails';
+import axios from 'axios';
 
 
 function App() {
@@ -17,16 +18,23 @@ function App() {
   }
 
   function onCreateUser(user) {
-    fetch(
-      'https://react-http-tutorial-5cf12-default-rtdb.firebaseio.com/users.json', {
-      method: 'POST',
-      body: JSON.stringify(user),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then((user) => {
-        console.log(user)
+    //Using JS fetch method
+    // fetch(
+    //   'https://react-http-tutorial-5cf12-default-rtdb.firebaseio.com/users.json', {
+    //   method: 'POST',
+    //   body: JSON.stringify(user),
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   }
+    // })
+    //   .then((user) => {
+    //     console.log(user)
+    //   })
+
+    //Using axios
+    axios.post('https://react-http-tutorial-5cf12-default-rtdb.firebaseio.com/users.json', user)
+    .then((user) => {
+        console.log(user.data);
       })
 
   }
