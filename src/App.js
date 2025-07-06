@@ -5,6 +5,7 @@ import './App.css';
 import UserDetails from './Components/UserDetails';
 import axios from 'axios';
 import Loader from './Components/Loader/Loader';
+import useCounter from './Components/Utility/use-counter';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
   let [errorMessage, setErrorMessage] = useState(null);
   let [userToEdit, setEditUser] = useState(null);
   let [editMode, setEditMode] = useState(false);
+  let counter = useCounter(false);
 
   useEffect(() => {
     fetchUsers()
@@ -128,6 +130,7 @@ function App() {
         <button className='btn btn-success' onClick={addUserHandler}>Add User</button>
         <button className='btn btn-normal' onClick={fetchUsers}>Get Users</button>
       </div>
+      {/* Custom Hook Example:{<h1>See my custom counter: {counter}</h1>} */}
       {!loading && !errorMessage && <UserDetails users={users} onEditUser={onEditUser} onDeleteUser={onDeleteUser}></UserDetails>}
       {errorMessage && <h1 style={{ textAlign: 'center' }}>{errorMessage}</h1>}
       {loading && <Loader></Loader>}
