@@ -7,6 +7,10 @@ function UserDetails(props) {
     props.onEditUser(user);
   }
 
+  function onViewUserHandler(event, user) {
+    props.onViewUser(user);
+  }
+
   function onDeleteUserHandler(event, user) {
     let del = window.confirm('Do you really want to delete the record of ' + user.firstName + ' ' + user.lastName)
     if (del) {
@@ -39,6 +43,7 @@ function UserDetails(props) {
             <td>
               <button className="btn btn-primary" onClick={(event) => { onEditUserHandler(event, user) }}>Edit</button>
               <button className="btn btn-danger" onClick={(event) => { onDeleteUserHandler(event, user) }}>Delete </button>
+              <button className="btn btn-primary" onClick={(event) => { onViewUserHandler(event, user) }}>View </button>
             </td>
           </tr>
         </>
